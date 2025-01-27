@@ -43,6 +43,9 @@ $(LIBFT):
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test_5:
+	./client $(PID) "AAAAA" & ./client $(PID) "BBBB" & ./client $(PID) "CCC"
+
 clean:
 	rm -f *.o
 	$(MAKE) -C $(LIBFT_DIR) clean
