@@ -2,5 +2,5 @@ testfile
 **/*.swp
 **/*.o
 **/*.a
-push_swap
-test_30
+client
+server
