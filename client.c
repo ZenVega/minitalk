@@ -34,7 +34,7 @@ void	send_bin(int pid, char *str)
 		bit = 7;
 		while (bit >= 0)
 		{
-			if (k(*str & (0x01 << bit)) != 0)
+			if ((*str & (0x01 << bit)) != 0)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
