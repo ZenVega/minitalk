@@ -6,26 +6,33 @@
 /*   By: uschmidt <uschmidt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:12:35 by uschmidt          #+#    #+#             */
-/*   Updated: 2025/01/23 15:07:17 by uschmidt         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:42:24 by uschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include "libft/libft.h"
-#include <signal.h>
+#include "server.h"
 
-#define STR_LEN 12
+t_sig	*g_sig;
 
-typedef struct s_sig {
-	int		bit;
-	pid_t	pid;
-	char	c;
-	char	*str;
-}	t_sig;
+int	init_g_sig(void)
+{
+	g_sig = (t_sig *)malloc(sizeof(t_sig));
+	if (!g_sig)
+		return (0);
+	g_sig->str = (char *)ft_calloc(g_sig->str_max, sizeof(char));
+	g_sig->str_max = STR_LEN;
+	if (!g_sig->str)
+	{
+		free(g_sig);
+		return (0);
+	}
+	g_sig->pid = -1;
+	g_sig->c = 0;
+	g_sig->bit = 7;
+	return (1);
+}
 
-static t_sig	*g_sig;
-
-void	send_return(int pid)
+void	send_and_return(int pid)
 {
 	g_sig->str[ft_strlen(g_sig->str)] = '\0';
 	ft_printf("%s\n", g_sig->str);
@@ -34,13 +41,24 @@ void	send_return(int pid)
 	g_sig->bit = 7;
 	g_sig->c = 0;
 	free(g_sig->str);
+	free(g_sig);
+	g_sig = NULL;
 }
 
 void	reset_c(void)
 {
-	int	str_len;
+	size_t	str_len;
+	char	*tmp;
 
 	str_len = ft_strlen(g_sig->str);
+	if (str_len >= g_sig->str_max - 1)
+	{
+		tmp = (char *)ft_calloc((g_sig->str_max + STR_LEN), sizeof(char));
+		ft_strlcpy(tmp, g_sig->str, str_len);
+		free(g_sig->str);
+		g_sig->str = tmp;
+		g_sig->str_max += STR_LEN;
+	}
 	g_sig->str[str_len] = g_sig->c;
 	g_sig->bit = 7;
 	g_sig->c = 0;
@@ -49,10 +67,11 @@ void	reset_c(void)
 void	sig_handler(int sig_id, siginfo_t *sig_info, void *context)
 {
 	(void)context;
-	if (g_sig->pid == -1)
+	if (!g_sig)
 	{
+		if (!init_g_sig())
+			return ;
 		g_sig->pid = sig_info->si_pid;
-		g_sig->str = (char *)ft_calloc(STR_LEN, sizeof(char));
 	}
 	if (g_sig->pid != sig_info->si_pid)
 		return ;
@@ -62,7 +81,7 @@ void	sig_handler(int sig_id, siginfo_t *sig_info, void *context)
 	if (g_sig->bit == -1)
 	{
 		if (g_sig->c == '\0')
-			send_return(g_sig->pid);
+			send_and_return(g_sig->pid);
 		else
 			reset_c();
 	}
@@ -73,14 +92,8 @@ int	main(void)
 	pid_t				pid;
 	struct sigaction	sa;
 
-	g_sig = (t_sig *)malloc(sizeof(t_sig));
-	if (!g_sig)
-		return (1);
-	g_sig->pid = -1;
-	g_sig->c = 0;
 	sa.sa_sigaction = sig_handler;
 	sa.sa_flags = SA_SIGINFO;
-	g_sig->bit = 7;
 	pid = getpid();
 	ft_printf("PID: %d\n", pid);
 	sigaction(SIGUSR1, &sa, NULL);
