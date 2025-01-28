@@ -62,21 +62,11 @@ void	reset_c(void)
 	g_sig->c = 0;
 }
 
-void	send_and_return(int pid)
-{
-	ft_printf("%s", g_sig->str);
-	kill(pid, SIGUSR1);
-	reset_server();
-}
-
 void	sig_handler(int sig_id, siginfo_t *sig_info, void *context)
 {
 	(void)context;
 	if (sig_id == SIGINT)
-	{
-		reset_server();
-		exit(0);
-	}
+		(reset_server(), exit(0));
 	if (!g_sig)
 	{
 		if (!init_g_sig())
@@ -91,7 +81,11 @@ void	sig_handler(int sig_id, siginfo_t *sig_info, void *context)
 	if (g_sig->bit == -1)
 	{
 		if (g_sig->c == '\0')
-			send_and_return(g_sig->pid);
+		{
+			ft_printf("%s", g_sig->str);
+			kill(g_sig->pid, SIGUSR1);
+			reset_server();
+		}
 		else
 			reset_c();
 	}
