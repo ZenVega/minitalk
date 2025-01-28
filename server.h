@@ -6,7 +6,7 @@
 /*   By: uschmidt <uschmidt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 11:02:06 by uschmidt          #+#    #+#             */
-/*   Updated: 2025/01/28 11:12:09 by uschmidt         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:20:58 by uschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # include "libft/libft.h"
 # include <signal.h>
 
-# define STR_LEN 12
+# define STR_LEN 1024
+# define SLEEP	100
+# define RESET	2000
 
 typedef struct s_sig {
 	int		bit;
