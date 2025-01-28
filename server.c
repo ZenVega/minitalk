@@ -6,7 +6,7 @@
 /*   By: uschmidt <uschmidt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:12:35 by uschmidt          #+#    #+#             */
-/*   Updated: 2025/01/28 11:42:24 by uschmidt         ###   ########.fr       */
+/*   Updated: 2025/01/28 12:12:00 by uschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	init_g_sig(void)
 void	send_and_return(int pid)
 {
 	g_sig->str[ft_strlen(g_sig->str)] = '\0';
-	ft_printf("%s\n", g_sig->str);
+	ft_printf("%s", g_sig->str);
 	kill(pid, SIGUSR1);
 	g_sig->pid = -1;
 	g_sig->bit = 7;
@@ -51,15 +51,15 @@ void	reset_c(void)
 	char	*tmp;
 
 	str_len = ft_strlen(g_sig->str);
-	if (str_len >= g_sig->str_max - 1)
+	g_sig->str[str_len] = g_sig->c;
+	if (str_len >= g_sig->str_max - 2)
 	{
 		tmp = (char *)ft_calloc((g_sig->str_max + STR_LEN), sizeof(char));
-		ft_strlcpy(tmp, g_sig->str, str_len);
+		ft_strlcpy(tmp, g_sig->str, g_sig->str_max);
 		free(g_sig->str);
 		g_sig->str = tmp;
 		g_sig->str_max += STR_LEN;
 	}
-	g_sig->str[str_len] = g_sig->c;
 	g_sig->bit = 7;
 	g_sig->c = 0;
 }

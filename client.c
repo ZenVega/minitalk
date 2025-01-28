@@ -6,7 +6,7 @@
 /*   By: uschmidt <uschmidt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 13:48:38 by uschmidt          #+#    #+#             */
-/*   Updated: 2025/01/23 15:35:08 by uschmidt         ###   ########.fr       */
+/*   Updated: 2025/01/28 12:01:48 by uschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,34 +25,29 @@ void	sig_handler(int sig_id, siginfo_t *sig_info)
 		ft_printf("Message received by: %d\n", pid);
 }
 
-void	send_bin(int pid, char *str)
+void	morse_char(int pid, char c)
 {
 	int	bit;
 
-	while (*str)
-	{
-		bit = 7;
-		while (bit >= 0)
-		{
-			if ((*str & (0x01 << bit)) != 0)
-				kill(pid, SIGUSR1);
-			else
-				kill(pid, SIGUSR2);
-			bit--;
-			usleep(SLEEP);
-		}
-		str++;
-	}
 	bit = 7;
 	while (bit >= 0)
 	{
-		if (('\0' & (0x01 << bit)) != 0)
+		if ((c & (0x01 << bit)) != 0)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
 		bit--;
 		usleep(SLEEP);
 	}
+}
+void	send_msg(int pid, char *str)
+{
+	while (*str)
+	{
+		morse_char(pid, *str);
+		str++;
+	}
+	morse_char(pid, '\0');
 }
 
 int	main(int argc, char **argv)
@@ -68,7 +63,7 @@ int	main(int argc, char **argv)
 	{
 		pid = ft_atoi(argv[1]);
 		ft_printf("PID = %d\n", pid);
-		send_bin(pid, argv[2]);
+		send_msg(pid, argv[2]);
 	}
 	return (1);
 }
