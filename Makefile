@@ -16,8 +16,17 @@ server.c\
 CLIENT_FILES = \
 client.c\
 
+SERVER_FILES_BONUS = \
+server_bonus.c\
+
+CLIENT_FILES_BONUS = \
+client_bonus.c\
+
 SERVER_OFILES = $(SERVER_FILES:.c=.o)
 CLIENT_OFILES = $(CLIENT_FILES:.c=.o)
+
+SERVER_OFILES_BONUS = $(SERVER_FILES_BONUS:.c=.o)
+CLIENT_OFILES_BONUS = $(CLIENT_FILES_BONUS:.c=.o)
 
 CC = gcc
 
@@ -31,11 +40,19 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 all: $(SERVER) $(CLIENT)
 
+bonus: $(SERVER)_bonus $(CLIENT)_bonus
+
 $(SERVER): $(SERVER_OFILES) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(SERVER) $(SERVER_OFILES) $(LIBFT) -no-pie
 
 $(CLIENT): $(CLIENT_OFILES) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(CLIENT) $(CLIENT_OFILES) $(LIBFT) -no-pie
+
+$(SERVER)_bonus: $(SERVER_OFILES_BONUS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(SERVER)_bonus $(SERVER_OFILES_BONUS) $(LIBFT) -no-pie
+
+$(CLIENT)_bonus: $(CLIENT_OFILES_BONUS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(CLIENT)_bonus $(CLIENT_OFILES_BONUS) $(LIBFT) -no-pie
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
@@ -52,7 +69,7 @@ clean:
 
 fclean:	clean
 	$(MAKE) clean
-	rm $(SERVER) $(CLIENT)
+	rm $(SERVER) $(CLIENT) $(SERVER)_bonus $(CLIENT)_bonus
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
