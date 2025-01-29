@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include <unistd.h>
+#include "libft/libft.h"
+#include <signal.h>
 
 int	g_pid;
 
@@ -38,7 +40,7 @@ void	morse_char(int pid, char c)
 				exit_kill_err();
 		}
 		bit--;
-		usleep(SLEEP);
+		usleep(100);
 	}
 }
 
@@ -76,14 +78,14 @@ int	main(int argc, char **argv)
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGINT, &sa, NULL);
-	write(1, "MESSAGING... ", 13);
 	if (argc == 3)
 	{
+		write(1, "MESSAGING... ", 13);
 		g_pid = ft_atoi(argv[1]);
 		ft_printf("PID = %d\n", g_pid);
 		send_msg(argv[2]);
 	}
 	else
-		ft_printf("");
+		ft_printf("Too few or too less arguments. Expected PID and Message");
 	return (1);
 }

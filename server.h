@@ -18,7 +18,6 @@
 # include <signal.h>
 
 # define STR_LEN 1024
-# define SLEEP	100
 # define RESET	2000
 
 typedef struct s_sig {

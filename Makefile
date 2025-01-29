@@ -69,8 +69,8 @@ clean:
 
 fclean:	clean
 	$(MAKE) clean
-	rm $(SERVER) $(CLIENT) $(SERVER)_bonus $(CLIENT)_bonus
 	$(MAKE) -C $(LIBFT_DIR) fclean
+	rm $(SERVER) $(CLIENT) $(SERVER)_bonus $(CLIENT)_bonus
 
 re: fclean all
 

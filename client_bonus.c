@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client_bonus.c                                     :+:      :+:    :+:   */
+/*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: uschmidt <uschmidt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/29 09:26:15 by uschmidt          #+#    #+#             */
-/*   Updated: 2025/01/29 09:27:08 by uschmidt         ###   ########.fr       */
+/*   Created: 2025/01/23 13:48:38 by uschmidt          #+#    #+#             */
+/*   Updated: 2025/01/29 09:26:54 by uschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include <unistd.h>
+#include "libft/libft.h"
+#include <signal.h>
 
 int	g_pid;
 
@@ -38,7 +40,7 @@ void	morse_char(int pid, char c)
 				exit_kill_err();
 		}
 		bit--;
-		usleep(SLEEP);
+		usleep(100);
 	}
 }
 
@@ -76,14 +78,14 @@ int	main(int argc, char **argv)
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGINT, &sa, NULL);
-	write(1, "MESSAGING... ", 13);
 	if (argc == 3)
 	{
+		write(1, "MESSAGING... ", 13);
 		g_pid = ft_atoi(argv[1]);
 		ft_printf("PID = %d\n", g_pid);
 		send_msg(argv[2]);
 	}
 	else
-		ft_printf("");
+		ft_printf("Too few or too less arguments. Expected PID and Message");
 	return (1);
 }
